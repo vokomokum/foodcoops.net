@@ -18,6 +18,7 @@ export FOODSOFT_SECRET_KEY_BASE=1234567890abcdefghijklmnoprstuvwxyz
 export MYSQL_ROOT_PASSWORD=mysql
 export SHAREDLISTS_DB_PASSWORD=sharedlists
 export SHAREDLISTS_SECRET_KEY_BASE=abcdefghijklmnopqrstuvwxyz1234567890
+export CERTBOT_DISABLED=1 # skip this on production when ready
 
 docker-compose build --pull
 docker-compose pull
@@ -54,8 +55,9 @@ docker-compose run --rm foodsoft bundle exec rake db:setup
 docker-compose run --rm sharedlists bundle exec rake db:setup
 ```
 
-Finally setup the demo database. Since we specify the database via environment variables `multicoops:run_single` doesn't work with `db`-setup tasks, so we need to do this differently
-right now.
+Finally setup the demo database. Since we specify the database via environment
+variables `multicoops:run_single` doesn't work with `db`-setup tasks, so we
+need to do this differently right now.
 
 ```shell
 docker-compose run --rm \
@@ -70,6 +72,7 @@ development, and to bootstrap easily.
 
 For production, you need proper SSL certificates. These are provided by
 [letsencrypt](https://letsencrypt.org). Set `DOMAIN` and make sure the DNS is setup correctly.
+Then remove `CERTBOT_DISABLED=1` from the environment and restart the certbot instance.
 
 ### Deployment
 

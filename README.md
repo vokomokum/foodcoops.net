@@ -122,7 +122,7 @@ To update Foodsoft to a new version:
 * Without delay, run database migrations and restart the foodsoft images.
 
 ```shell
-cd /home/git/foodcoops.net
+cd /home/deploy/foodcoops.net
 docker-compose run --rm bundle exec foodsoft rake multicoops:run TASK=db:migrate
 docker-compose restart foodsoft foodsoft_worker # foodsoft_mail
 ```

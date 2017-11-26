@@ -150,7 +150,137 @@ demo:
   database:
     database: foodsoft_demo
 
+beisswat:
+  <<: *defaults
+  database:
+    database: foodsoft_beisswat
+
+biwag:
+  <<: *defaults
+  database:
+    database: foodsoft_biwag
+
+boernicke:
+  <<: *defaults
+  database:
+    database: foodsoft_boernicke
+
+egliswil:
+  <<: *defaults
+  database:
+    database: foodsoft_egliswil
+
 elsabinar:
   <<: *defaults
   database:
     database: foodsoft_elsabinar
+
+fairnetzt:
+  <<: *defaults
+  database:
+    database: foodsoft_fairnetzt
+
+fckalk:
+  <<: *defaults
+  database:
+    database: foodsoft_fckalk
+
+fcruetli:
+  <<: *defaults
+  database:
+    database: foodsoft_fcruetli
+
+fcschinke09:
+  <<: *defaults
+  database:
+    database: foodsoft_fcschinke09
+
+foodcool:
+  <<: *defaults
+  database:
+    database: foodsoft_foodcool
+
+hessenhagen:
+  <<: *defaults
+  database:
+    database: foodsoft_hessenhagen
+
+jolling:
+  <<: *defaults
+  database:
+    database: foodsoft_jolling
+
+koeln:
+  <<: *defaults
+  database:
+    database: foodsoft_koeln
+
+korb:
+  <<: *defaults
+  database:
+    database: foodsoft_korb
+
+lauterleben:
+  <<: *defaults
+  database:
+    database: foodsoft_lauterleben
+
+luzern:
+  <<: *defaults
+  database:
+    database: foodsoft_luzern
+
+meierei:
+  <<: *defaults
+  database:
+    database: foodsoft_meierei
+
+radieschen:
+  <<: *defaults
+  database:
+    database: foodsoft_radieschen
+
+rundling:
+  <<: *defaults
+  database:
+    database: foodsoft_rundling
+
+schalottchen:
+  <<: *defaults
+  database:
+    database: foodsoft_schalottchen
+
+plattsalat:
+  <<: *defaults
+  database:
+    database: foodsoft_plattsalat
+
+stolzenhagen:
+  <<: *defaults
+  database:
+    database: foodsoft_stolzenhagen
+
+tanteaute:
+  <<: *defaults
+  database:
+    database: foodsoft_tanteaute
+
+tantemuenze:
+  <<: *defaults
+  database:
+    database: foodsoft_tantemuenze
+
+thadenstrasse:
+  <<: *defaults
+  database:
+    database: foodsoft_thadenstrasse
+
+tuess:
+  <<: *defaults
+  database:
+    database: foodsoft_tuess
+
+vokomaastricht:
+  <<: *defaults
+  database:
+    database: foodsoft_vokomaastricht

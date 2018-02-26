@@ -230,6 +230,11 @@ lauterleben:
   database:
     database: foodsoft_lauterleben
 
+localharvest:
+  <<: *defaults
+  database:
+    database: foodsoft_localharvest
+
 luzern:
   <<: *defaults
   database:

@@ -39,11 +39,11 @@ docker exec -it foodcoopsnet_mariadb_1 mysql -u root -p
 Then run the following SQL commands:
 
 ```sql
-CREATE DATABASE foodsoft_demo CHARACTER SET utf8 COLLATE utf8mb4_unicode_520_ci;
+CREATE DATABASE foodsoft_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON foodsoft.* TO foodsoft@'%' IDENTIFIED BY 'secret_fs';
 
 -- setup sharedlists database
-CREATE DATABASE sharedlists CHARACTER SET utf8 COLLATE utf8mb4_unicode_520_ci;
+CREATE DATABASE sharedlists CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON sharedlists.* TO sharedlists@'%' IDENTIFIED BY 'secret_sl';
 GRANT SELECT ON sharedlists.* TO foodsoft@'%';
 ```
@@ -148,7 +148,7 @@ Make sure to have this information before adding it to our configuration.
 
 3. Create the database. [Open](#initial-database-setup) a MySQL shell, and run:
    ```sql
-   CREATE DATABASE foodsoft_myfoodcoop CHARACTER SET utf8 COLLATE utf8mb4_unicode_520_ci;
+   CREATE DATABASE foodsoft_myfoodcoop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
    GRANT ALL ON foodsoft_myfoodcoop.* TO foodsoft@'%';
    ```
 

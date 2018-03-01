@@ -290,6 +290,11 @@ tuess:
   database:
     database: foodsoft_tuess
 
+yamhi:
+  <<: *defaults
+  database:
+    database: foodsoft_yamhi
+
 vokomaastricht:
   <<: *defaults
   database:

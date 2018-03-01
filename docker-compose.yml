@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       CERTBOT_DOMAINS: |-
+        ${DOMAIN},www.${DOMAIN}
         app.${DOMAIN}
       CERTBOT_EMAIL: admin@${DOMAIN}
       CERTBOT_TOUCH_FILE: /haproxy_triggers/reload

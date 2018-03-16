@@ -61,7 +61,7 @@ need to do this differently right now.
 
 ```shell
 docker-compose run --rm \
-  -e 'DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/fs_demo?encoding=utf8mb4' \
+  -e 'DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_demo?encoding=utf8mb4' \
   foodsoft bundle exec rake db:schema:load db:seed:small.en
 ```
 

@@ -9,10 +9,10 @@ services:
         ${DOMAIN},www.${DOMAIN}
         app.${DOMAIN}
       CERTBOT_EMAIL: admin@${DOMAIN}
-      CERTBOT_TOUCH_FILE: /haproxy_triggers/reload
+      CERTBOT_TOUCH_FILE: /triggers/reload-certs
     volumes:
       - certs:/certs
-      - haproxy_triggers:/haproxy_triggers
+      - triggers:/triggers
 
   foodsoft:
     build: foodsoft
@@ -26,6 +26,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - SECRET_KEY_BASE=${FOODSOFT_SECRET_KEY_BASE}
       - SHAREDLISTS_DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/sharedlists?encoding=utf8mb4
+      - MAILER_PREFIX=foodsoft+
       - SMTP_DOMAIN=app.${DOMAIN}
       - SMTP_ADDRESS
       - SMTP_PORT
@@ -40,17 +41,24 @@ services:
     extends: foodsoft
     command: ./proc-start worker
 
+  foodsoft_smtp:
+    extends: foodsoft
+    command: ./proc-start mail
+    environment:
+      - SMTP_SERVER_PORT=2525
+      - SMTP_SERVER_HOST=0.0.0.0
+
   haproxy:
     build: haproxy
     restart: always
     environment:
-      - HAPROXY_RELOAD_FILE=/haproxy_triggers/reload
+      - HAPROXY_RELOAD_FILE=/triggers/reload-certs
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - certs:/certs:ro
-      - haproxy_triggers:/haproxy_triggers
+      - triggers:/triggers
 
   mariadb:
     image: mariadb:10.3
@@ -78,6 +86,8 @@ services:
       - DATABASE_URL=mysql2://sharedlists:${SHAREDLISTS_DB_PASSWORD}@mariadb/sharedlists?encoding=utf8mb4
       - SECRET_TOKEN=${SHAREDLISTS_SECRET_KEY_BASE}
       - RAILS_RELATIVE_URL_ROOT=/sharedlists
+      - MAILER_DOMAIN=app.${DOMAIN}
+      - MAILER_PREFIX=sharedlists+
     volumes:
       - supplier_assets:/usr/src/app/supplier_assets
 
@@ -85,8 +95,28 @@ services:
     extends: sharedlists
     command: ./proc-start cron
 
+  sharedlists_smtp:
+    extends: sharedlists
+    command: ./proc-start mail
+    environment:
+      - SMTP_SERVER_PORT=2525
+      - SMTP_SERVER_HOST=0.0.0.0
+
+  smtp:
+    build: smtp
+    restart: always
+    environment:
+      - DOMAIN=app.${DOMAIN}
+      - HOSTNAME=app.${DOMAIN}
+      - POSTFIX_RELOAD_FILE=/triggers/reload-certs
+    ports:
+      - "25:25"
+    volumes:
+      - certs:/certs:ro
+      - triggers:/triggers
+
 volumes:
   certs:
-  haproxy_triggers:
   mariadb:
   supplier_assets:
+  triggers:

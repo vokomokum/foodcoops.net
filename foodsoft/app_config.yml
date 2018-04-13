@@ -220,6 +220,11 @@ koeln:
   database:
     database: foodsoft_koeln
 
+konsumkoop:
+  <<: *defaults
+  database:
+    database: foodsoft_konsumkoop
+
 korb:
   <<: *defaults
   database:

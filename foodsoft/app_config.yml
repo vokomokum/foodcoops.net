@@ -245,6 +245,11 @@ luzern:
   database:
     database: foodsoft_luzern
 
+mannheim:
+  <<: *defaults
+  database:
+    database: foodsoft_mannheim
+
 meierei:
   <<: *defaults
   database:

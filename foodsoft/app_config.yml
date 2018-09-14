@@ -170,6 +170,11 @@ eca:
   database:
     database: foodsoft_eca
 
+ethelkidson:
+  <<: *defaults
+  database:
+    database: foodsoft_ethelkidson
+
 egliswil:
   <<: *defaults
   database:

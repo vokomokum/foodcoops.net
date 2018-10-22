@@ -210,6 +210,11 @@ foodcool:
   database:
     database: foodsoft_foodcool
 
+guerckchen:
+  <<: *defaults
+  database:
+    database: foodsoft_guerckchen
+
 hessenhagen:
   <<: *defaults
   database:

@@ -250,6 +250,11 @@ localharvest:
   database:
     database: foodsoft_localharvest
 
+lostfood:
+  <<: *defaults
+  database:
+    database: foodsoft_lostfood
+
 luzern:
   <<: *defaults
   database:

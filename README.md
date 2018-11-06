@@ -131,8 +131,8 @@ docker-compose restart foodsoft foodsoft_worker foodsoft_smtp
 
 What do we need to know?
 
-* Foodcoop identifier, will become part of the url. If the identifier is `my-foodcoop`, then
-  their url will be `https://app.${DOMAIN}/my-foodcoop`.
+* Foodcoop identifier, will become part of the url. If the identifier is `myfoodcoop`, then
+  their url will be `https://app.${DOMAIN}/myfoodcoop`.
 * Foodcoop name (so that we can recognize it better).
 * Name and address of two contact persons within the food cooperative (we keep it in a private document).
 
@@ -149,10 +149,9 @@ Make sure to have this information before adding it to our configuration.
 3. Create the database. [Open](#initial-database-setup) a MySQL shell, and run:
    ```sql
    CREATE DATABASE foodsoft_myfoodcoop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
-   GRANT ALL ON foodsoft_myfoodcoop.* TO foodsoft@'%';
    ```
 
-4. Initialize the database (substituting `${FOODSOFT_DB_PASSWORD}`):
+4. Initialize the database (substituting `${FOODSOFT_DB_PASSWORD}` and `foodsoft_myfoodcoop`):
    ```shell
    docker-compose run --rm \
      -e 'DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_myfoodcoop?encoding=utf8mb4' \

@@ -98,7 +98,9 @@ default: &defaults
   #page_footer: <a href="http://www.foodcoop.test/">FC Test</a> is supported by <a href="http://www.hoster.test/">Hoster</a>.
 
   # Custom CSS for the foodcoop
-  #custom_css: 'body { background-color: #fcffba; }'
+  custom_css: |
+    /* Remove the feedback button */
+    body > ul.nav.pull-right > li:last-child { display: none; }
 
   # Uncomment to add tracking code for web statistics, e.g. for Piwik. (Added to bottom of page)
   #webstats_tracking_code: |
@@ -131,6 +133,13 @@ default: &defaults
   # and makes it possible to share data with several foodcoops. Using this requires installing
   # an additional application with a separate database.
   shared_lists: <%= ENV['SHAREDLISTS_DATABASE_URL'] %>
+
+  # Vokomokum plugin configuration
+  vokomokum_members_api_url: http://members:6543/
+  vokomokum_members_www_url: "https://<%= ENV['HOSTNAME_MEMBERS'] %>/"
+  vokomokum_cookie_domain: ".<%= ENV['DOMAIN'] %>"
+  vokomokum_client_id: external_app
+  vokomokum_client_secret: "<%= ENV['VOKOMOKUM_CLIENT_SECRET'] %>"
 
 # don't remove this, required to run the app
 production:

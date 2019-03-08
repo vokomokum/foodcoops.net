@@ -8,19 +8,24 @@ If you want to run it for yourself, see [setup](#setup), or if you'd like to mod
 please proceed to [common tasks](#common-tasks).
 
 
+_**Please note** that this is currently under development._
+
+
 ## Setup
 
 To get it running yourself, you need to provide the private information via environment variables to
-`docker-compose`. Here is an example to build and start the project:
+`docker-compose`. Here is an example to build and start the project locally:
 
 ```shell
-export DOMAIN=vokomokum.test
-export HOSTNAME=order.vokomokum.test # when testing locally, use: localhost
+export DOMAIN=vkmkm.localhost
+export HOSTNAME_ORDER=order.vkmkm.localhost
+export HOSTNAME_MEMBERS=members.vkmkm.localhost
 export FOODSOFT_DB_PASSWORD=secret_fs
 export FOODSOFT_SECRET_KEY_BASE=1234567890abcdefghijklmnoprstuvwxyz
 export MYSQL_ROOT_PASSWORD=mysql
 export SHAREDLISTS_DB_PASSWORD=secret_sl
 export SHAREDLISTS_SECRET_KEY_BASE=abcdefghijklmnopqrstuvwxyz1234567890
+export VOKOMOKUM_CLIENT_SECRET=secret_cc
 export CERTBOT_DISABLED=1 # skip this on production when ready
 
 docker-compose build --pull
@@ -29,6 +34,10 @@ docker-compose up -d
 ```
 
 You can also store the variables in `.env` instead.
+
+The above setup should work on a development machine. Depending on your setup, you may need
+to point `order.vkmkm.localhost` and `members.vkmkm.localhost` in your `/etc/hosts` to `127.0.0.1`.
+
 
 ### Initial database setup
 
@@ -113,6 +122,7 @@ To update Foodsoft to a new version:
 
 * Update version in number in [`foodsoft/Dockerfile`](foodsoft/Dockerfile)
 * Look at the [changelog](https://github.com/foodcoops/foodsoft/blob/master/CHANGELOG.md) to see if anything is required for migrating, and prepare it.
+* Test it locally, especially our customizations. Don't forget this!
 * [Deploy](#deploying)
 * Without delay, run database migrations and restart the foodsoft images.
 

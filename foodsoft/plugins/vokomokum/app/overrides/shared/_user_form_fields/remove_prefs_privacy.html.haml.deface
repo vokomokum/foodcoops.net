@@ -1,0 +1,1 @@
+/ remove '.settings-group:has(erb:contains("simple_fields_for :profile"))'

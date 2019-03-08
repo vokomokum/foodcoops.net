@@ -3,51 +3,43 @@
 default: &defaults
   # If you wanna serve more than one foodcoop with one installation
   # Don't forget to setup databases for each foodcoop. See also MULTI_COOP_INSTALL
-  multi_coop_install: true
+  multi_coop_install: false
 
   # If multi_coop_install you have to use a coop name, which you you wanna be selected by default
-  default_scope: 'demo'
+  default_scope: 'f'
 
   # name of this foodcoop
-  name: FC Test
-  # foodcoop contact information (used for FAX messages)
-  contact:
-    street: Grüne Straße 103
-    zip_code: "10101"
-    city: Greencity
-    country: Foodland
-    email: foodsoft@foodcoop.test
-    phone:
+  name: Vokomokum
 
   # Homepage
-  homepage: https://foodcoops.github.io
+  homepage: http://www.vomokum.nl/
 
   # foodsoft documentation URL
-  help_url: https://github.com/foodcoops/foodsoft/wiki/Doku
+  #help_url: https://github.com/foodcoops/foodsoft/wiki/Doku
 
   # documentation URL for the apples&pears work system
-  applepear_url: https://github.com/foodcoops/foodsoft/wiki/%C3%84pfel-u.-Birnen
+  #applepear_url: https://github.com/foodcoops/foodsoft/wiki/%C3%84pfel-u.-Birnen
 
   # custom foodsoft software URL (used in footer)
   foodsoft_url: https://foodcoops.github.io
 
   # Default language
-  #default_locale: en
+  default_locale: nl
   # By default, foodsoft takes the language from the webbrowser/operating system.
   # In case you really want foodsoft in a certain language by default, set this to true.
   # When members are logged in, the language from their profile settings is still used.
   #ignore_browser_locale: false
   # Default timezone, e.g. UTC, Amsterdam, Berlin, etc.
-  #time_zone: Berlin
+  time_zone: Amsterdam
   # Currency symbol, and whether to add a whitespace after the unit.
-  #currency_unit: €
-  #currency_space: true
+  currency_unit: €
+  currency_space: true
 
   # price markup in percent
   price_markup: 2.0
 
   # default vat percentage for new articles
-  tax_default: 7.0
+  tax_default: 9.0
 
   # tolerance order option: If set to false, article tolerance values do not count
   # for total article price as long as the order is not finished.
@@ -58,7 +50,7 @@ default: &defaults
   #stop_ordering_under: 75
 
   # Comment out to completely hide apple points (be sure to comment stop_ordering_under)
-  #use_apple_points: false
+  use_apple_points: false
 
   # ordergroups can only order when their balance is higher than or equal to this
   # not fully enforced right now, since the check is only client-side
@@ -86,8 +78,8 @@ default: &defaults
   # Most plugins can be enabled/disabled here as well. Messages and wiki are enabled
   # by default and need to be set to false to disable. Most other plugins needs to
   # be enabled before they do anything.
-  #use_wiki: true
-  #use_messages: true
+  use_wiki: false
+  use_messages: false
 
   # Base font size for generated PDF documents
   #pdf_font_size: 12
@@ -126,8 +118,8 @@ default: &defaults
   # Config for the exception_notification plugin
   notification:
     error_recipients: <%= (ENV['ERROR_RECIPIENTS'] || '').split %>
-    sender_address: <%= "\\\"Foodsoft Error\\\" <#{ENV['EMAIL_SENDER']}>" %>
-    email_prefix: "[Foodsoft]"
+    sender_address: <%= "\\\"Foodsoft vkmk Error\\\" <#{ENV['EMAIL_SENDER']}>" %>
+    email_prefix: "[Foodsoft vkmk]"
 
   # http config for this host to generate links in emails (uses environment config when not set)
   protocol: https
@@ -144,183 +136,5 @@ default: &defaults
 production:
   <<: *defaults
 
-# demo instance
-demo:
+f:
   <<: *defaults
-  database:
-    database: foodsoft_demo
-
-beisswat:
-  <<: *defaults
-  database:
-    database: foodsoft_beisswat
-
-biwag:
-  <<: *defaults
-  database:
-    database: foodsoft_biwag
-
-boernicke:
-  <<: *defaults
-  database:
-    database: foodsoft_boernicke
-
-eca:
-  <<: *defaults
-  database:
-    database: foodsoft_eca
-
-ethelkidson:
-  <<: *defaults
-  database:
-    database: foodsoft_ethelkidson
-
-egliswil:
-  <<: *defaults
-  database:
-    database: foodsoft_egliswil
-
-elsabinar:
-  <<: *defaults
-  database:
-    database: foodsoft_elsabinar
-
-fairnetzt:
-  <<: *defaults
-  database:
-    database: foodsoft_fairnetzt
-
-fckalk:
-  <<: *defaults
-  database:
-    database: foodsoft_fckalk
-
-fcruetli:
-  <<: *defaults
-  database:
-    database: foodsoft_fcruetli
-
-fcschinke09:
-  <<: *defaults
-  database:
-    database: foodsoft_fcschinke09
-
-foodcool:
-  <<: *defaults
-  database:
-    database: foodsoft_foodcool
-
-guerckchen:
-  <<: *defaults
-  database:
-    database: foodsoft_guerckchen
-
-hessenhagen:
-  <<: *defaults
-  database:
-    database: foodsoft_hessenhagen
-
-jolling:
-  <<: *defaults
-  database:
-    database: foodsoft_jolling
-
-koeln:
-  <<: *defaults
-  database:
-    database: foodsoft_koeln
-
-konsumkoop:
-  <<: *defaults
-  database:
-    database: foodsoft_konsumkoop
-
-korb:
-  <<: *defaults
-  database:
-    database: foodsoft_korb
-
-lauterleben:
-  <<: *defaults
-  database:
-    database: foodsoft_lauterleben
-
-localharvest:
-  <<: *defaults
-  database:
-    database: foodsoft_localharvest
-
-lostfood:
-  <<: *defaults
-  database:
-    database: foodsoft_lostfood
-
-luzern:
-  <<: *defaults
-  database:
-    database: foodsoft_luzern
-
-mannheim:
-  <<: *defaults
-  database:
-    database: foodsoft_mannheim
-
-meierei:
-  <<: *defaults
-  database:
-    database: foodsoft_meierei
-
-radieschen:
-  <<: *defaults
-  database:
-    database: foodsoft_radieschen
-
-rundling:
-  <<: *defaults
-  database:
-    database: foodsoft_rundling
-
-schalottchen:
-  <<: *defaults
-  database:
-    database: foodsoft_schalottchen
-
-plattsalat:
-  <<: *defaults
-  database:
-    database: foodsoft_plattsalat
-
-stolzenhagen:
-  <<: *defaults
-  database:
-    database: foodsoft_stolzenhagen
-
-tanteaute:
-  <<: *defaults
-  database:
-    database: foodsoft_tanteaute
-
-tantemuenze:
-  <<: *defaults
-  database:
-    database: foodsoft_tantemuenze
-
-thadenstrasse:
-  <<: *defaults
-  database:
-    database: foodsoft_thadenstrasse
-
-tuess:
-  <<: *defaults
-  database:
-    database: foodsoft_tuess
-
-yamhi:
-  <<: *defaults
-  database:
-    database: foodsoft_yamhi
-
-vokomaastricht:
-  <<: *defaults
-  database:
-    database: foodsoft_vokomaastricht

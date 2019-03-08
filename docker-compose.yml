@@ -6,9 +6,8 @@ services:
     restart: always
     environment:
       CERTBOT_DOMAINS: |-
-        ${DOMAIN},www.${DOMAIN}
-        app.${DOMAIN}
-      CERTBOT_EMAIL: admin@${DOMAIN}
+        ${HOSTNAME},vers.${DOMAIN}
+      CERTBOT_EMAIL: systems-all@${DOMAIN}
       CERTBOT_TOUCH_FILE: /triggers/reload-certs
     volumes:
       - certs:/certs
@@ -18,16 +17,16 @@ services:
     build: foodsoft
     restart: always
     environment:
-      - DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_demo?encoding=utf8mb4
+      - DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_vkmkm?encoding=utf8mb4
       - EMAIL_SENDER=noreply@${DOMAIN}
       #- ERROR_RECIPIENTS=
-      - HOSTNAME=app.${DOMAIN}
+      - HOSTNAME
       - QUEUE=foodsoft_notifier
       - REDIS_URL=redis://redis:6379
       - SECRET_KEY_BASE=${FOODSOFT_SECRET_KEY_BASE}
       - SHAREDLISTS_DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/sharedlists?encoding=utf8mb4
       - MAILER_PREFIX=foodsoft+
-      - SMTP_DOMAIN=app.${DOMAIN}
+      - SMTP_DOMAIN=${HOSTNAME}
       - SMTP_ADDRESS
       - SMTP_PORT
       - SMTP_USER_NAME
@@ -72,7 +71,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     environment:
-      - PMA_ABSOLUTE_URI=https://app.${DOMAIN}/phpmyadmin/
+      - PMA_ABSOLUTE_URI=https://${HOSTNAME}/phpmyadmin/
       - PMA_HOST=mariadb
 
   redis:
@@ -86,7 +85,7 @@ services:
       - DATABASE_URL=mysql2://sharedlists:${SHAREDLISTS_DB_PASSWORD}@mariadb/sharedlists?encoding=utf8mb4
       - SECRET_TOKEN=${SHAREDLISTS_SECRET_KEY_BASE}
       - RAILS_RELATIVE_URL_ROOT=/sharedlists
-      - MAILER_DOMAIN=app.${DOMAIN}
+      - MAILER_DOMAIN=${HOSTNAME}
       - MAILER_PREFIX=sharedlists+
     volumes:
       - supplier_assets:/usr/src/app/supplier_assets
@@ -106,8 +105,8 @@ services:
     build: smtp
     restart: always
     environment:
-      - DOMAIN=app.${DOMAIN}
-      - HOSTNAME=app.${DOMAIN}
+      - HOSTNAME
+      - DOMAIN=${HOSTNAME}
       - POSTFIX_RELOAD_FILE=/triggers/reload-certs
     ports:
       - "25:25"

@@ -1,7 +1,9 @@
-Foodcoops.net deployment
-========================
+Vokomokum deployment setup
+==========================
 
-This is the production setup of the future [foodcoops.net](https://foodcoops.github.io/global-foodsoft-platform/).
+This is the production setup for [Vokomokum](http://vokomokum.nl/), a food
+cooperative in Amsterdam, NL for: members, finances and ordering.
+
 If you want to run it for yourself, see [setup](#setup), or if you'd like to modify the configuration,
 please proceed to [common tasks](#common-tasks).
 
@@ -12,11 +14,12 @@ To get it running yourself, you need to provide the private information via envi
 `docker-compose`. Here is an example to build and start the project:
 
 ```shell
-export DOMAIN=foodcoops.test
+export DOMAIN=vokomokum.test
+export HOSTNAME=order.vokomokum.test # when testing locally, use: localhost
 export FOODSOFT_DB_PASSWORD=secret_fs
 export FOODSOFT_SECRET_KEY_BASE=1234567890abcdefghijklmnoprstuvwxyz
 export MYSQL_ROOT_PASSWORD=mysql
-export SHAREDLISTS_DB_PASSWORD=sharedlists
+export SHAREDLISTS_DB_PASSWORD=secret_sl
 export SHAREDLISTS_SECRET_KEY_BASE=abcdefghijklmnopqrstuvwxyz1234567890
 export CERTBOT_DISABLED=1 # skip this on production when ready
 
@@ -33,14 +36,14 @@ On first time run, you'll need to setup the database. Start and connect to it as
 
 ```shell
 docker-compose up -d mariadb redis
-docker exec -it foodcoopsnet_mariadb_1 mysql -u root -p
+docker exec -it vkmkm-deploy_mariadb_1 mysql -u root -p
 ```
 
 Then run the following SQL commands:
 
 ```sql
-CREATE DATABASE foodsoft_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
-GRANT ALL ON foodsoft.* TO foodsoft@'%' IDENTIFIED BY 'secret_fs';
+CREATE DATABASE foodsoft_vkmkm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
+GRANT ALL ON foodsoft_vkmkm.* TO foodsoft@'%' IDENTIFIED BY 'secret_fs';
 
 -- setup sharedlists database
 CREATE DATABASE sharedlists CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
@@ -55,14 +58,10 @@ docker-compose run --rm foodsoft bundle exec rake db:setup
 docker-compose run --rm sharedlists bundle exec rake db:setup
 ```
 
-Finally setup the demo database. Since we specify the database via environment
-variables `multicoops:run_single` doesn't work with `db`-setup tasks, so we
-need to do this differently right now.
+You may want to load a database seed for Foodsoft:
 
 ```shell
-docker-compose run --rm \
-  -e 'DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_demo?encoding=utf8mb4' \
-  foodsoft bundle exec rake db:schema:load db:seed:small.en
+docker-compose run --rm foodsoft bundle exec rake db:drop db:create db:schema:load db:seed:small.nl
 ```
 
 ### SSL certificates
@@ -82,9 +81,9 @@ the remote repository, rebuilds the docker images and runs them when needed.
 You need to clone the repository and configure it for group access:
 
 ```sh
-git clone --config core.sharedRepository=true https://github.com/foodcoops/foodcoops.net
-chgrp -R docker foodcoops.net
-chmod -R g+sw foodcoops.net
+git clone --config core.sharedRepository=true https://github.com/vokomokum/vkmkm-deploy.git
+chgrp -R docker vkmkm-deploy
+chmod -R g+sw vkmkm-deploy
 ```
 
 Finally, setup a daily cronjob to ensure security updates for the docker images:
@@ -98,16 +97,12 @@ chmod u+x /etc/cron.daily/deploy.sh
 
 * [Deploying](#deploying)
 * [Upgrading Foodsoft](#upgrading-foodsoft)
-* [Adding a new foodcoop](#adding-a-new-foodcoop)
-* [Giving a foodcoop its own subdomain](#giving-a-foodcoop-its-own-subdomain)
-* [Adding a member to the operations team](#adding-a-member-to-the-operations-team)
-* [Troubleshooting](#troubleshooting)
 
 
 ### Deploying
 
 When you've made a change to this repository, you'll likely want to deploy it to production.
-First push the changes to the [Github repository](https://github.com/foodcoops/foodcoops.net),
+First push the changes to the [Github repository](https://github.com/vokomokum/vkmkm-deploy),
 then run `deploy.sh` on the server.
 
 ### Upgrading Foodsoft
@@ -122,65 +117,8 @@ To update Foodsoft to a new version:
 * Without delay, run database migrations and restart the foodsoft images.
 
 ```shell
-cd /home/deploy/foodcoops.net
+cd /home/deploy/vkmkm-deploy
 docker-compose run --rm foodsoft bundle exec rake multicoops:run TASK=db:migrate
 docker-compose restart foodsoft foodsoft_worker foodsoft_smtp
 ```
 
-### Adding a new foodcoop
-
-What do we need to know?
-
-* Foodcoop identifier, will become part of the url. If the identifier is `myfoodcoop`, then
-  their url will be `https://app.${DOMAIN}/myfoodcoop`.
-* Foodcoop name (so that we can recognize it better).
-* Name and address of two contact persons within the food cooperative (we keep it in a private document).
-
-Make sure to have this information before adding it to our configuration.
-
-1. Add a new section to [`foodsoft/app_config.yml`](foodsoft/app_config.yml). You could copy the
-   `demo` instance. Make sure that each foodcoop has a unique identifier, and doesn't contain
-   any 'weird' characters. You may set the _name_ as well. The database should be lowercase alphabet,
-   prefixed with `foodsoft_` (in this example that is `foodsoft_myfoodcoop`). Make sure to set it in
-   the configuration.
-
-2. Commit the changes, push and [deploy](#deploying).
-
-3. Create the database. [Open](#initial-database-setup) a MySQL shell, and run:
-   ```sql
-   CREATE DATABASE foodsoft_myfoodcoop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
-   ```
-
-4. Initialize the database (substituting `${FOODSOFT_DB_PASSWORD}` and `foodsoft_myfoodcoop`):
-   ```shell
-   docker-compose run --rm \
-     -e 'DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_myfoodcoop?encoding=utf8mb4' \
-     foodsoft bundle exec rake db:setup
-   ```
-
-5. Immediately login with `admin` / `secret` and change the user details and password.
-
-6. You may want to pre-set some configuration if you know a bit more about the foodcoop. It's always
-   helpful for new foodcoops to have a setup that already reflects their intended use a bit.
-
-7. Mail the foodcoop contact persons with the url and admin account details, along with what they'd
-   need to get started. I hope we'll get some more documentation and an email template for this.
-
-   Please also communicate that this platform is run by volunteers from participating food cooperatives
-   and depends on donations.
-
-### Giving a foodcoop its own subdomain
-
-### Adding a member to the operations team
-
-(please expand this section)
-
-- Add to Github [operations team](https://github.com/orgs/foodcoops/teams/operations)
-- Add to relevant mailing lists (nabble [ops group](http://foodsoft.51229.x6.nabble.com/template/NamlServlet.jtp?macro=manage_users_and_groups&group=Ops+global), [ops list](http://foodsoft.51229.x6.nabble.com/foodsoft-global-ops-f1394.html), systemausfall announce and support)
-- Add user account to server with garbage password (see [issue #8](https://github.com/foodcoops/foodcoops.net/issues/8))
-- Add user to the servers `docker` group
-- Obtain user's SSH key and verify it from a Github gist, Keybase or a video call.
-- Add SSH key to user account
-- (maybe more, pending #8)
-
-### Troubleshooting

@@ -26,7 +26,8 @@ export MYSQL_ROOT_PASSWORD=mysql
 export SHAREDLISTS_DB_PASSWORD=secret_sl
 export SHAREDLISTS_SECRET_KEY_BASE=abcdefghijklmnopqrstuvwxyz1234567890
 export VOKOMOKUM_CLIENT_SECRET=secret_cc
-export CERTBOT_DISABLED=1 # skip this on production when ready
+# remove the following line on production when ready
+export CERTBOT_DISABLED=1
 
 docker-compose build --pull
 docker-compose pull

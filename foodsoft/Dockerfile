@@ -30,6 +30,10 @@ RUN export DATABASE_URL=mysql2://localhost/temp && \
     apt-get purge -y --auto-remove mysql-server && \
     rm -Rf /var/lib/apt/lists/* /var/cache/apt/*
 
+# apply temporary patches - remove when merged upstream
+COPY patch-*.diff ./
+RUN for i in patch-*.diff; do patch -p1 -s -i $i; done
+
 # Then add the remaining plugin files
 COPY plugins ./plugins
 

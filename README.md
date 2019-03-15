@@ -130,7 +130,7 @@ To update Foodsoft to a new version:
 
 ```shell
 cd /home/deploy/vkmkm-deploy
-docker-compose run --rm foodsoft bundle exec rake multicoops:run TASK=db:migrate
+docker-compose run --rm foodsoft bundle exec rake db:migrate
 docker-compose restart foodsoft foodsoft_worker foodsoft_smtp
 ```
 

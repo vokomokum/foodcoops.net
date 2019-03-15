@@ -53,6 +53,9 @@ class VokomokumController < ApplicationController
     msg = FoodsoftVokomokum.send_payment_reminders!(session[:vokomokum_auth_cookies])
     Order.where(state: 'closed').where(payment_reminders_sent_at: nil).update_all(payment_reminders_sent_at: Time.now)
     redirect_to finance_order_index_path, notice: msg
+
+  rescue FoodsoftVokomokum::VokomokumException => e
+    redirect_to finance_order_index_path, alert: e.message
   end
 
   protected

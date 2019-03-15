@@ -23,10 +23,16 @@ module FoodsoftVokomokum
       extend ActiveSupport::Concern
 
       included do
+        rescue_from FoodsoftVokomokum::VokomokumException, with: :vokomokum_handle_exception
+
         after_filter :vokomokum_show_msg_on_close, only: :close
       end
 
       private
+
+      def vokomokum_handle_exception(e)
+        redirect_to finance_order_index_url, alert: t('finance.balancing.close.alert', message: e.message)
+      end
 
       def vokomokum_show_msg_on_close
         # replace flash with message from Vokomokum members system

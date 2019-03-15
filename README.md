@@ -58,7 +58,8 @@ GRANT ALL ON foodsoft_vkmkm.* TO foodsoft@'%' IDENTIFIED BY 'secret_fs';
 -- setup sharedlists database
 CREATE DATABASE sharedlists CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON sharedlists.* TO sharedlists@'%' IDENTIFIED BY 'secret_sl';
-GRANT SELECT ON sharedlists.* TO foodsoft@'%';
+GRANT SELECT ON sharedlists.suppliers TO foodsoft@'%';
+GRANT SELECT ON sharedlists.articles TO foodsoft@'%';
 ```
 
 Subsequently you need to populate the databases:

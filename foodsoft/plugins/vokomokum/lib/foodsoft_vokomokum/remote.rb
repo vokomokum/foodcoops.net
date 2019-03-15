@@ -12,9 +12,9 @@ module FoodsoftVokomokum
   #   When an unexpected condition occurs, raises FoodsoftVokomokum::AuthnException.
   #   When the user was not logged in, returns `nil`.
   def self.check_user(cookies)
-    res = members_req('userinfo', cookies)
-    Rails.logger.debug 'Vokomokum check_user returned: ' + res.body
-    json = ActiveSupport::JSON.decode(res.body)
+    body = members_req('userinfo', cookies)
+    Rails.logger.debug 'Vokomokum userinfo returned: ' + body
+    json = ActiveSupport::JSON.decode(body)
     json['error'] and raise AuthnException.new('Vokomokum login failed: ' + json['error'])
     json['user_id'].blank? and return
     json['active'] or raise InactiveException.new("Welcome back! You can't order just yet, please contact membership@vokomokum.nl to become active again.")
@@ -45,13 +45,32 @@ module FoodsoftVokomokum
 
   protected
 
-  def self.members_req(path, cookies, data={})
-    data = {client_id: FoodsoftConfig[:vokomokum_client_id], client_secret: FoodsoftConfig[:vokomokum_client_secret]}.merge(data)
-    self.remote_req(FoodsoftConfig[:vokomokum_members_api_url], path, data, cookies)
+  def self.base_url
+    FoodsoftConfig[:vokomokum_members_api_url]
   end
 
-  def self.members_req_json(path, cookies, data={})
-    res = self.members_req(path, cookies, data)
+  def self.auth_data
+    {
+      client_id: FoodsoftConfig[:vokomokum_client_id],
+      client_secret: FoodsoftConfig[:vokomokum_client_secret]
+    }
+  end
+
+  def self.members_req(path, cookies, data={})
+    res = self.remote_req(self.base_url, path, cookies)
+    Rails.logger.debug "Vokomokum #{path} returned: " + res.body
+    res.body
+  end
+
+  def self.members_req_json(path, cookies, data=nil)
+    if data
+      res = self.remote_req(self.base_url, path, cookies) do |req|
+        req.content_type = 'application/json'
+        req.body = self.auth_data.merge(data).to_json
+      end
+    else
+      res = self.remote_req(self.base_url, path, cookies)
+    end
     Rails.logger.debug "Vokomokum #{path} returned: " + res.body
     json = ActiveSupport::JSON.decode(res.body)
     if json['status'] != 'ok'
@@ -65,15 +84,17 @@ module FoodsoftVokomokum
     end
   end
 
-  def self.remote_req(url, path, data=nil, cookies={})
+  def self.remote_req(url, path, cookies={})
+    # include client id and secret
+    path = "#{path}?#{self.auth_data.to_param}"
     # only keep relevant cookies
     cookies = cookies.select {|k,v| k=='Mem' || k=='Key'}
     uri = URI.join(url, path)
-    if data.nil?
-      req = Net::HTTP::Get.new(uri.request_uri)
-    else
+    if block_given?
       req = Net::HTTP::Post.new(uri.request_uri)
-      req.set_form_data(data)
+      yield req
+    else
+      req = Net::HTTP::Get.new(uri.request_uri)
     end
     # TODO cookie-encode the key and value
     req['Cookie'] = cookies.to_a.map {|v| "#{v[0]}=#{v[1]}"}.join('; ') #

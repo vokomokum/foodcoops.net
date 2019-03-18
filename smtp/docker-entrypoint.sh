@@ -3,6 +3,7 @@ set -e
 
 /usr/sbin/postconf -e "mydomain=${DOMAIN}"
 /usr/sbin/postconf -e "myhostname=${HOSTNAME}"
+sed -E -i "s#^(password\\s*=\\s*).*\$#\\1${DB_PASSWORD}#" /etc/postfix/alias_maps.cf
 
 # figure out which certificate to use
 CERT_FILE=/certs/${HOSTNAME}.pem

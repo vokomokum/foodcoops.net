@@ -21,6 +21,7 @@ export DOMAIN=vkmkm.localhost
 export HOSTNAME_ORDER=order.vkmkm.localhost
 export HOSTNAME_MEMBERS=members.vkmkm.localhost
 export MEMBERS_DB_PASSWORD=secret_mb
+export SMTP_DB_PASSWORD=secret_ms
 export FOODSOFT_DB_PASSWORD=secret_fs
 export FOODSOFT_SECRET_KEY_BASE=1234567890abcdefghijklmnoprstuvwxyz
 export MYSQL_ROOT_PASSWORD=mysql
@@ -66,7 +67,14 @@ GRANT SELECT ON sharedlists.articles TO foodsoft@'%';
 -- create members database
 CREATE DATABASE members CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON members.* TO members@'%' IDENTIFIED BY 'secret_mb';
+GRANT SELECT ON members.members TO smtp@'%' IDENTIFIED BY 'secret_ms';
+GRANT SELECT ON members.workgroups TO smtp@'%';
+GRANT SELECT ON members.wg_leadership TO smtp@'%';
+GRANT SELECT ON members.wg_membership TO smtp@'%';
 ```
+
+Note that some `GRANT` statements may only work after you've populated the database. If
+an error happens because of that, try again after doing so in the next step.
 
 Subsequently you need to populate the databases:
 

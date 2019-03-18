@@ -123,6 +123,7 @@ services:
     environment:
       - DOMAIN
       - HOSTNAME=${HOSTNAME_ORDER}
+      - DB_PASSWORD=${SMTP_DB_PASSWORD}
       - POSTFIX_RELOAD_FILE=/triggers/reload-certs
     ports:
       - "25:25"

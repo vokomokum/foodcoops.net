@@ -38,8 +38,8 @@ local_transport = error: local delivery disabled
 # Recipient delimiter for extended addresses
 recipient_delimiter = +
 
-# Empty alias list to override the configuration variable and disable NIS
-alias_maps =
+# Alias lists: we use them for mailing lists, handled by SQL queries.
+alias_maps = mysql:alias_maps.cf
 
 #
 # TLS

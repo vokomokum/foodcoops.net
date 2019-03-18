@@ -20,6 +20,7 @@ To get it running yourself, you need to provide the private information via envi
 export DOMAIN=vkmkm.localhost
 export HOSTNAME_ORDER=order.vkmkm.localhost
 export HOSTNAME_MEMBERS=members.vkmkm.localhost
+export MEMBERS_DB_PASSWORD=secret_mb
 export FOODSOFT_DB_PASSWORD=secret_fs
 export FOODSOFT_SECRET_KEY_BASE=1234567890abcdefghijklmnoprstuvwxyz
 export MYSQL_ROOT_PASSWORD=mysql
@@ -52,14 +53,19 @@ docker exec -it vkmkm-deploy_mariadb_1 mysql -u root -p
 Then run the following SQL commands:
 
 ```sql
+-- create foodsoft database
 CREATE DATABASE foodsoft_vkmkm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON foodsoft_vkmkm.* TO foodsoft@'%' IDENTIFIED BY 'secret_fs';
 
--- setup sharedlists database
+-- create sharedlists database
 CREATE DATABASE sharedlists CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON sharedlists.* TO sharedlists@'%' IDENTIFIED BY 'secret_sl';
 GRANT SELECT ON sharedlists.suppliers TO foodsoft@'%';
 GRANT SELECT ON sharedlists.articles TO foodsoft@'%';
+
+-- create members database
+CREATE DATABASE members CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
+GRANT ALL ON members.* TO members@'%' IDENTIFIED BY 'secret_mb';
 ```
 
 Subsequently you need to populate the databases:
@@ -67,6 +73,7 @@ Subsequently you need to populate the databases:
 ```shell
 docker-compose run --rm foodsoft bundle exec rake db:setup
 docker-compose run --rm sharedlists bundle exec rake db:setup
+docker-compose run --rm members ./dbsetup.py
 ```
 
 You may want to load a database seed for Foodsoft:

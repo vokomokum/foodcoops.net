@@ -55,6 +55,7 @@ services:
   members:
     build: members
     environment:
+      - MEMBERS_DB_PASSWORD
       - APPLICATION_URL=https://${HOSTNAME_MEMBERS}
       - REDIRECT_URLS=https://${HOSTNAME_ORDER}/f/
       - VOKOMOKUM_CLIENT_SECRET

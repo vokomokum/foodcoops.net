@@ -20,6 +20,7 @@ fi
 # figure out which certificate to use
 CERT_FILE=/certs/${HOSTNAME}.pem
 [ -r "$CERT_FILE" ] || CERT_FILE=/certs/dummy.pem
+[ -r "$CERT_FILE" ] || CERT_FILE=/certs/localhost.pem
 [ -r "$CERT_FILE" ] || CERT_FILE=
 if [ "$CERT_FILE" ]; then
   /usr/sbin/postconf -e "smtpd_tls_cert_file=${CERT_FILE}"

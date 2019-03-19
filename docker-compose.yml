@@ -101,7 +101,7 @@ services:
       - DATABASE_URL=mysql2://sharedlists:${SHAREDLISTS_DB_PASSWORD}@mariadb/sharedlists?encoding=utf8mb4
       - SECRET_TOKEN=${SHAREDLISTS_SECRET_KEY_BASE}
       - RAILS_RELATIVE_URL_ROOT=/sharedlists
-      - MAILER_DOMAIN=${HOSTNAME_ORDER}
+      - MAILER_DOMAIN=${DOMAIN}
       - MAILER_PREFIX=sharedlists+
     volumes:
       - supplier_assets:/usr/src/app/supplier_assets

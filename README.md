@@ -119,6 +119,17 @@ echo `readlink -f deploy.sh` > /etc/cron.daily/deploy.sh
 chmod u+x /etc/cron.daily/deploy.sh
 ```
 
+### Mail delivery
+
+To be able to send emails, you need a mail relay. Point the `SMTP_ADDRESS` and `SMTP_PORT` environment
+variables to the relay. When authentication is required, also set `SMTP_USER_NAME` and `SMTP_PASSWORD`.
+
+When testing mail delivery, you wouldn't want to deliver real emails. Instead, you can use
+[mailcatcher](https://mailcatcher.me/) and see all outgoing mails in a web-interface. To use it,
+uncomment the relevant lines on [docker-compose.yml](docker-compose.yml), and set `SMTP_ADDRESS`
+to `mailcatcher` and `SMTP_PORT` to `25`. Open a webbrowser on `http://localhost:1080/` and you're set.
+
+
 ## Common tasks
 
 * [Deploying](#deploying)

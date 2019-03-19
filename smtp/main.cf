@@ -16,9 +16,10 @@ myorigin = $mydomain
 #
 # When messages are relayed, it's important to have the queue directory
 # at a standard place and put on a Docker volume, or else messages may
-# get lost across instance restarts. For now, we only forward, so it's
-# not yet necessary to configure this.
-#queue_directory = /queue
+# get lost across instance restarts. Not necessary without delivery,
+# but since we have the option for a smarthost (see docker-entrypoint.sh),
+# include it.
+queue_directory = /var/spool/postfix
 
 # Message size limit
 message_size_limit = 50000000
@@ -26,20 +27,19 @@ message_size_limit = 50000000
 # Relayed networks
 mynetworks = 127.0.0.1/32 [::1]/128
 
-# Forward mydomain to downstream smtp servers and disable local delivery.
+# Forward mydomain to downstream smtp servers, local delivery for forwards.
 mydestination = $mydomain
 transport_maps = inline:{
     { foodsoft@$mydomain    = smtp:[foodsoft_smtp]:2525    },
     { sharedlists@$mydomain = smtp:[sharedlists_smtp]:2525 }
   }
 local_recipient_maps =
-local_transport = error: local delivery disabled
 
 # Recipient delimiter for extended addresses
 recipient_delimiter = +
 
 # Alias lists: we use them for mailing lists, handled by SQL queries.
-alias_maps = mysql:alias_maps.cf
+alias_maps = mysql:/etc/postfix/alias_maps.cf
 
 #
 # TLS

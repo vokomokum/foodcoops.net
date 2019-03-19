@@ -125,14 +125,26 @@ services:
       - HOSTNAME=${HOSTNAME_ORDER}
       - DB_PASSWORD=${SMTP_DB_PASSWORD}
       - POSTFIX_RELOAD_FILE=/triggers/reload-certs
+      - SMTP_ADDRESS
+      - SMTP_PORT
+      - SMTP_USER_NAME
+      - SMTP_PASSWORD
     ports:
       - "25:25"
     volumes:
       - certs:/certs:ro
       - triggers:/triggers
+      - smtp:/var/spool/postfix
+
+  ## See the section _Mail delivery_ in README.md for mail delivery testing.
+  #mailcatcher:
+  #  image: tophfr/mailcatcher
+  #  ports:
+  #    - "1080:80"
 
 volumes:
   certs:
   mariadb:
+  smtp:
   supplier_assets:
   triggers:

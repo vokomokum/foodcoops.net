@@ -25,7 +25,7 @@ queue_directory = /var/spool/postfix
 message_size_limit = 50000000
 
 # Relayed networks
-mynetworks = 127.0.0.1/32 [::1]/128
+mynetworks_style = subnet
 
 # Forward mydomain to downstream smtp servers, local delivery for forwards.
 mydestination = $mydomain

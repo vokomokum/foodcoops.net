@@ -20,22 +20,19 @@ services:
     restart: always
     environment:
       - DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_vkmkm?encoding=utf8mb4
-      - EMAIL_SENDER=noreply@${DOMAIN}
+      - EMAIL_SENDER=systems@${DOMAIN}
       #- ERROR_RECIPIENTS=
+      - DOMAIN
       - HOSTNAME=${HOSTNAME_ORDER}
       - HOSTNAME_MEMBERS
-      - DOMAIN
       - QUEUE=foodsoft_notifier
       - REDIS_URL=redis://redis:6379
       - SECRET_KEY_BASE=${FOODSOFT_SECRET_KEY_BASE}
       - SHAREDLISTS_DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/sharedlists?encoding=utf8mb4
       - VOKOMOKUM_CLIENT_SECRET
+      - MAILER_DOMAIN=${HOSTNAME_ORDER}
       - MAILER_PREFIX=foodsoft+
-      - SMTP_DOMAIN=${HOSTNAME_ORDER}
-      - SMTP_ADDRESS
-      - SMTP_PORT
-      - SMTP_USER_NAME
-      - SMTP_PASSWORD
+      - SMTP_ADDRESS=smtp
 
   foodsoft_cron:
     extends: foodsoft
@@ -55,6 +52,9 @@ services:
   members:
     build: members
     environment:
+      - DOMAIN
+      - HOSTNAME=${HOSTNAME_MEMBERS}
+      - EMAIL_SENDER=systems@${DOMAIN}
       - MEMBERS_DB_PASSWORD
       - APPLICATION_URL=https://${HOSTNAME_MEMBERS}
       - REDIRECT_URLS=https://${HOSTNAME_ORDER}/f/

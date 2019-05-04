@@ -160,3 +160,5 @@ docker-compose run --rm foodsoft bundle exec rake db:migrate
 docker-compose restart foodsoft foodsoft_worker foodsoft_smtp
 ```
 
+### Known Issues
+See: KNOWN_ISSUES.md

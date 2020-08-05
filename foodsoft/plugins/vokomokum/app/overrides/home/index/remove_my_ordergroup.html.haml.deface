@@ -1,1 +1,0 @@
-/ remove 'section:has(h2:has(erb:contains("my_ordergroup.title")))'

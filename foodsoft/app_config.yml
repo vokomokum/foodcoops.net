@@ -134,6 +134,9 @@ default: &defaults
   # an additional application with a separate database.
   shared_lists: <%= ENV['SHAREDLISTS_DATABASE_URL'] %>
 
+  # Use foodsoft-shop instead of standard member ordering screens
+  use_foodsoft_shop: true
+
   # Vokomokum plugin configuration
   vokomokum_members_api_url: http://members:6543/
   vokomokum_members_www_url: "https://<%= ENV['HOSTNAME_MEMBERS'] %>/"

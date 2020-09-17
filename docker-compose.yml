@@ -21,7 +21,7 @@ services:
     environment:
       - DATABASE_URL=mysql2://foodsoft:${FOODSOFT_DB_PASSWORD}@mariadb/foodsoft_vkmkm?encoding=utf8mb4
       - EMAIL_SENDER=systems@${DOMAIN}
-      #- ERROR_RECIPIENTS=
+      - ERROR_RECIPIENTS=systems-all@${DOMAIN}
       - DOMAIN
       - HOSTNAME=${HOSTNAME_ORDER}
       - HOSTNAME_MEMBERS
@@ -33,6 +33,7 @@ services:
       - MAILER_DOMAIN=${HOSTNAME_ORDER}
       - MAILER_PREFIX=foodsoft+
       - SMTP_ADDRESS=smtp
+      - SMTP_ENABLE_STARTTLS_AUTO=false
 
   foodsoft_cron:
     extends: foodsoft

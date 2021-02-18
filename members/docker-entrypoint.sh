@@ -7,7 +7,7 @@ sed -E -i "s#^(vokomokum\\.client_secret\\s*=\\s*).*\$#\\1${VOKOMOKUM_CLIENT_SEC
 sed -E -i "s#^(vokomokum\\.mail_sender\\s*=\\s*).*\$#\\1${EMAIL_SENDER}#" production.ini
 sed -E -i "s#request\\.application_url#'${APPLICATION_URL}'#" members/templates/base.pt
 
-sed -E -i "s#(hostname\\s*=\\s*)#\\1${HOSTNAME}#" /etc/ssmtp/ssmtp.conf
+sed -E -i "s#\\{\\{HOSTNAME\\}\\}#${HOSTNAME}#g" /etc/msmtprc
 
 echo "Running: $@"
 exec "$@"

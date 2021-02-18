@@ -1,7 +1,10 @@
+-- Source: https://github.com/vokomokum/vkmkm-erp/blob/master/members/members/tests/setup.sql
+-- Removed wrapping transaction, added missing tables.
+
 CREATE TABLE wh_order (
-    ord_no INTEGER NOT NULL, 
+    ord_no INTEGER NOT NULL,
     ord_label VARCHAR(255),
-    who_order_completed DATE, 
+    who_order_completed DATE,
     PRIMARY KEY (ord_no, ord_label)
 );
 INSERT INTO wh_order VALUES(1,'May 2012', '2012-05-28 17:35:23');
@@ -26,16 +29,16 @@ INSERT INTO shift_days_descriptions VALUES (1, 'pick-up day');
 INSERT INTO shift_days_descriptions VALUES (2, 'day before pick-up day');
 
 CREATE TABLE wholesaler (
-	wh_id INTEGER PRIMARY KEY, 
-	wh_name VARCHAR(100), 
-	wh_addr1 VARCHAR(50), 
-	wh_addr2 VARCHAR(50), 
-	wh_addr3 VARCHAR(50), 
-	wh_city VARCHAR(50), 
-	wh_postcode VARCHAR(10), 
-	wh_tel VARCHAR(20), 
-	wh_fax VARCHAR(20), 
-  wh_active BOOLEAN DEFAULT TRUE,
+	wh_id INTEGER PRIMARY KEY,
+	wh_name VARCHAR(100),
+	wh_addr1 VARCHAR(50),
+	wh_addr2 VARCHAR(50),
+	wh_addr3 VARCHAR(50),
+	wh_city VARCHAR(50),
+	wh_postcode VARCHAR(10),
+	wh_tel VARCHAR(20),
+	wh_fax VARCHAR(20),
+	wh_active boolean DEFAULT true,
 	wh_update VARCHAR(20)
 );
 INSERT INTO wholesaler VALUES(1,'DNB', '', '', '', 'Amsterdam', '', '', '', TRUE, '2012-11-29 17:35:23');
@@ -43,14 +46,14 @@ INSERT INTO wholesaler VALUES(2,'Zapatista', '', '', '', 'Hamburg', '', '', '', 
 INSERT INTO wholesaler VALUES(3,'De Werkbij', '', '', '', 'Amsterdam', '', '', '', TRUE, '2012-11-29 17:35:23');
 
 CREATE TABLE vers_suppliers (
-	id INTEGER PRIMARY KEY, 
-	name VARCHAR(100), 
-	website VARCHAR(50), 
-	email VARCHAR(50), 
-	telnr VARCHAR(20), 
+	id INTEGER PRIMARY KEY,
+	name VARCHAR(100),
+	website VARCHAR(50),
+	email VARCHAR(50),
+	telnr VARCHAR(20),
 	faxnr VARCHAR(20),
-  active BOOLEAN DEFAULT TRUE, 
-	comment VARCHAR(500) 
+	active boolean DEFAULT true,
+	comment VARCHAR(500)
 );
 INSERT INTO vers_suppliers VALUES(1,'Geijtenboerderij', '', '', '', '', TRUE, '');
 INSERT INTO vers_suppliers VALUES(2,'Boerderij B', '', '', '', '', TRUE, '');

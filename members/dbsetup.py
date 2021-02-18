@@ -6,7 +6,8 @@ from subprocess import Popen
 import random
 import datetime
 import transaction
-import ConfigParser
+from configparser import ConfigParser
+from passlib.hash import md5_crypt
 
 from members import models
 from members.models.member import Member
@@ -16,13 +17,13 @@ from members.models.workgroups import Workgroup
 from members.models.shift import Shift, shift_states
 from members.models.transactions import Transaction
 from members.models.transactions import TransactionType
-#from members.models.orders import Order
+from members.models.orders import Order
 
-from members.utils.md5crypt import md5crypt
 from members.utils.misc import month_info
 
+seed='Miau'
 default_pwd = 'notsecret'
-fakenames = 'scripts/fakenames.txt'
+fakenamesname = 'scripts/fakenames.txt'
 
 def addAdmin():
     '''
@@ -30,10 +31,9 @@ def addAdmin():
     '''
     admin = Member(fname=u'Adalbert', lname='Adminovic')
     admin.mem_email = 'admin@vokomokum.nl'
-    admin.mem_mobile = "06" + unicode(random.randint(10000000, 100000000))
+    admin.mem_mobile = "06" + str(random.randint(10000000, 100000000))
     admin.household_size = 1
-    salt = md5crypt('notsecret', '') 
-    admin.mem_enc_pwd = md5crypt('notsecret', salt)
+    admin.mem_enc_pwd = md5_crypt.hash('notsecret')
     admin.mem_admin = True
     admin.mem_active = True
     DBSession.add(admin)
@@ -42,13 +42,16 @@ def addAdmin():
     wgs.members.append(admin)
     wgm = DBSession.query(Workgroup).filter(Workgroup.name==u'Membership').first()
     wgm.members.append(admin)
+    wgf = DBSession.query(Workgroup).filter(Workgroup.name==u'Finance').first()
+    wgf.members.append(admin)
+    return admin
     
 
 """Ensure the backwards compatibility, these settings are used in unit tests"""
-def addOldNames():
+def addOldMembers():
     m1 = Member(fname=u'Peter', prefix=u'de', lname='Pan')
     m1.mem_email = 'peter@gmail.com'
-    m1.mem_enc_pwd = md5crypt('notsecret', 'notsecret')
+    m1.mem_enc_pwd = md5_crypt.hash('notsecret')
     DBSession.add(m1)
     m2 = Member(fname=u'Hans', prefix=u'de', lname='Wit')
     m1.mem_email = 'hans@gmail.com'
@@ -67,7 +70,8 @@ def addOldNames():
     s = Shift(wg2.id, 'do stuff', 2012, 6, member=m1)
     DBSession.add(s)
     DBSession.flush()
-    
+    return m1, m2
+
 
 def createWGs():
     wgs = []
@@ -83,24 +87,23 @@ def createWGs():
     return wgs
     
 
-def fillDBRandomly(seed, workgroups):
-    global default_pwd, fakenames
-    if seed: random.seed(seed)
+def fillDBRandomly(seed, workgroups, existing_members):
+    random.seed(seed)
     now = datetime.datetime.now()
     mi = month_info(now.date())
     # read in the fakenames
     names = {}
-    for l in file(fakenames, 'r'):
-        fname,lname = l.strip().split()
+    for l in open(fakenamesname, 'r').readlines():
+        fname, lname = l.strip().split()
         names[fname] = lname
     namelist = sorted(list(names.keys()))
     # 20% of the people are applicants
-    members = []
+    members = existing_members
     for l in namelist[int(len(namelist) * 0.2):]:
         m = Applicant(fname=l, lname=names[l])
         m.email = "%s-app@gmail.com"%(l)
         m.household_size = random.randint(1, 5)
-        m.telnr = "06" + unicode(random.randint(10000000, 100000000))
+        m.telnr = "06" + str(random.randint(10000000, 100000000))
         DBSession.add(m)
         # randomly select a number of workgroups m can be a member of
         DBSession.flush()
@@ -109,9 +112,9 @@ def fillDBRandomly(seed, workgroups):
         prefix = random.choice([u"de", u"van", u"voor", u"van den", u"te"])
         m = Member(fname=l, prefix=prefix, lname=names[l])
         m.mem_email = "%s@gmail.com" % (l)
-        m.mem_enc_pwd = md5crypt(default_pwd, default_pwd)
-        m.mem_mobile = "06" + unicode(random.randint(10000000, 100000000))
-        m.household_size = random.randint(1, 5)
+        m.mem_enc_pwd = md5_crypt.hash(default_pwd)
+        m.mem_mobile = "06" + str(random.randint(10000000, 100000000))
+        m.mem_household_size = random.randint(1, 5)
         m.mem_membership_paid = True
         if random.random() < 0.01:
             m.mem_membership_paid = False
@@ -121,7 +124,7 @@ def fillDBRandomly(seed, workgroups):
         m.mem_street = random.choice(namelist) + "street"
         m.mem_house = random.randint(1, 200)
         m.mem_postcode = "1000AB"
-        m.city = "Amsterdam"
+        m.mem_city = "Amsterdam"
         DBSession.add(m)
         # randomly select a number of workgroups m can be a member of
         for wg in random.sample(workgroups, random.randint(1, len(workgroups))):
@@ -148,6 +151,7 @@ def fillDBRandomly(seed, workgroups):
         DBSession.flush()
                 
     # Finally: create 20 transactions per member
+    # TODO enable, currently this fails because there are no orders
     #ttype = DBSession.query(TransactionType).filter(TransactionType.name=='Order Charge').first()
     #orders = DBSession.query(Order).all()
     #for m in members:
@@ -176,7 +180,7 @@ def main():
     password = os.getenv('MEMBERS_DB_PASSWORD')
     Popen('mysql -h mariadb -u members --password="{}" -D members <dbsetup.sql'.format(password), shell=True).wait()
     # then add members tables
-    config = ConfigParser.ConfigParser()
+    config = ConfigParser()
     config.read('production.ini')
     engine = create_engine(config.get('app:main', 'sqlalchemy.url'))
     DBSession = models.base.configure_session(engine)
@@ -194,11 +198,11 @@ def main():
 
     workgroups = createWGs()
     # add old names, used in base.py and in testing (ask Nic what to do with it)
-    addOldNames()
+    m1, m2 = addOldMembers()
     # add a default admin
-    addAdmin()
+    admin = addAdmin()
     # this applicants, members, shifts and transactions
-    fillDBRandomly(None, workgroups)
+    fillDBRandomly(seed, workgroups, [m1, m2, admin])
 
     DBSession.flush()
     transaction.commit()

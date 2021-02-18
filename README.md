@@ -67,27 +67,29 @@ GRANT SELECT ON sharedlists.articles TO foodsoft@'%';
 -- create members database
 CREATE DATABASE members CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
 GRANT ALL ON members.* TO members@'%' IDENTIFIED BY 'secret_mb';
+```
+
+Subsequently you need to populate the databases:
+
+```shell
+docker-compose run --rm foodsoft bundle exec rake db:setup db:migrate
+docker-compose run --rm sharedlists bundle exec rake db:setup
+docker-compose run --rm members ./dbsetup.py
+```
+
+Then finalize SQL setup for the SMTP server (run `mysql` as before):
+
+```sql
 GRANT SELECT ON members.members TO smtp@'%' IDENTIFIED BY 'secret_ms';
 GRANT SELECT ON members.workgroups TO smtp@'%';
 GRANT SELECT ON members.wg_leadership TO smtp@'%';
 GRANT SELECT ON members.wg_membership TO smtp@'%';
 ```
 
-Note that some `GRANT` statements may only work after you've populated the database. If
-an error happens because of that, try again after doing so in the next step.
-
-Subsequently you need to populate the databases:
+Finally you may want to load some dummy data into Foodsoft:
 
 ```shell
-docker-compose run --rm foodsoft bundle exec rake db:setup
-docker-compose run --rm sharedlists bundle exec rake db:setup
-docker-compose run --rm members ./dbsetup.py
-```
-
-You may want to load a database seed for Foodsoft:
-
-```shell
-docker-compose run --rm foodsoft bundle exec rake db:drop db:create db:schema:load db:seed:small.nl
+docker-compose run --rm foodsoft bundle exec rake db:drop db:create db:schema:load db:migrate db:seed:small.nl
 ```
 
 ### SSL certificates

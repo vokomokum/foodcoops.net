@@ -13,7 +13,19 @@ _**Please note** that this is currently under development._
 
 ## Setup
 
-To get it running yourself, you need to provide the private information via environment variables to
+### Foodsoft
+
+At this moment, you'l need to build the `vokomokum/foodsoft` yourself (this will change in the future).
+
+```shell
+git clone https://github.com/vokomokum/foodsoft.git /tmp/foodsoft
+cd /tmp/foodsoft
+docker build -t vokomokum/foodsoft:latest .
+```
+
+### Stack
+
+To get the stack running yourself, you need to provide the private information via environment variables to
 `docker-compose`. Here is an example to build and start the project locally:
 
 ```shell

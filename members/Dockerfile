@@ -1,7 +1,7 @@
-FROM nhoening/vokomokum-members
+FROM vokomokum/members
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
+    apt-get -o Acquire::AllowReleaseInfoChange::Suite=true update && \
     apt-get install --no-install-recommends -y mariadb-client msmtp-mta && \
     rm -Rf /var/lib/apt/lists/* /var/cache/apt/*
 
